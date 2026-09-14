@@ -1,0 +1,33 @@
+{
+  "name": "sadaf-boutique",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "assets:sheet": "node scripts/contact-sheet.mjs",
+    "assets:images": "node scripts/optimize-images.mjs",
+    "assets:videos": "bash scripts/generate-videos.sh",
+    "data:check": "node scripts/check-data.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "^0.560.0",
+    "next": "16.3.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.5",
+    "sharp": "^0.34.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5"
+  }
+}

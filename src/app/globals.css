@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ivory: #f7f4ef;
+  --color-surface: #ffffff;
+  --color-ink: #1c1a17;
+  --color-muted: #8a7f73;
+  --color-hairline: #e6e0d8;
+  --color-sand: #efe9e1;
+  --color-gold: #b08d57;
+  --color-oxblood: #7a2e2e;
+  --color-whatsapp: #25d366;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+
+  --shadow-lift: 0 10px 30px -12px rgb(28 26 23 / 0.18);
+  --shadow-sheet: 0 -8px 40px -12px rgb(28 26 23 / 0.25);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --breakpoint-3xl: 1800px;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ivory text-ink font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: rgb(176 141 87 / 0.25);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility eyebrow {
+  @apply text-[11px] font-medium uppercase tracking-[0.18em] text-muted;
+}
+
+@utility container-wide {
+  @apply mx-auto w-full max-w-[1600px] px-3 sm:px-5 lg:px-6;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility shimmer {
+  background: linear-gradient(100deg, #ece6de 30%, #f4f0ea 50%, #ece6de 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-fade-in {
+  animation: fade-in 220ms var(--ease-out-soft) both;
+}
+@utility animate-rise-in {
+  animation: rise-in 320ms var(--ease-out-soft) both;
+}
+@utility animate-slide-in-right {
+  animation: slide-in-right 320ms var(--ease-out-soft) both;
+}
+@utility animate-slide-in-up {
+  animation: slide-in-up 320ms var(--ease-out-soft) both;
+}
+@utility animate-scale-in {
+  animation: scale-in 220ms var(--ease-out-soft) both;
+}
+
+/* Page content fades in on navigation. Fill mode must stay "none" so the finished animation
+   does not leave <main> with its own stacking context (which would trap overlays under the header). */
+main {
+  animation: fade-in 260ms var(--ease-out-soft);
+}
+
+/* Safe-area helper for the mobile bottom navigation. */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
