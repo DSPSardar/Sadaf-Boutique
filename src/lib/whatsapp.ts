@@ -6,7 +6,8 @@ import { SITE_URL } from "@/lib/site";
  * WhatsApp ordering is frontend-only for now: we deep-link into WhatsApp with a prefilled
  * message. Swap `buildWhatsAppUrl` for an API call when order automation is connected.
  */
-const NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923000000000";
+// Boutique WhatsApp: 0371 3078774 → international format without "+". Env var overrides (blank ignored).
+const NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || "923713078774";
 const SITE = SITE_URL;
 
 export interface OrderSelection {
