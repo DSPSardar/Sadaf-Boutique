@@ -7,6 +7,7 @@ import { cn } from "@/lib/cn";
 import { useCart } from "@/store/cart";
 import { useUI } from "@/store/ui";
 import { useWishlist } from "@/store/wishlist";
+import { useHydrated } from "@/hooks/useHydrated";
 
 /** One-hand bottom navigation for phones: Home | Shop | Search | Wishlist | Cart. */
 export function MobileNavigation() {
@@ -14,6 +15,7 @@ export function MobileNavigation() {
   const { openSearch, openCart } = useUI();
   const { count } = useCart();
   const { ids } = useWishlist();
+  const hydrated = useHydrated();
 
   const item = "flex flex-1 flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium uppercase tracking-[0.1em] text-muted transition-colors";
   const active = "text-ink";
@@ -36,14 +38,14 @@ export function MobileNavigation() {
         <Link href="/wishlist" className={cn(item, "relative", pathname === "/wishlist" && active)}>
           <span className="relative">
             <Heart size={20} strokeWidth={1.5} />
-            {ids.length ? <Badge n={ids.length} /> : null}
+            {hydrated && ids.length ? <Badge n={ids.length} /> : null}
           </span>
           Wishlist
         </Link>
         <button type="button" onClick={openCart} className={item}>
           <span className="relative">
             <ShoppingBag size={20} strokeWidth={1.5} />
-            {count ? <Badge n={count} /> : null}
+            {hydrated && count ? <Badge n={count} /> : null}
           </span>
           Cart
         </button>

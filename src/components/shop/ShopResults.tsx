@@ -93,16 +93,24 @@ export function ShopResults({ products, lockedCategory, title }: ShopResultsProp
       </div>
 
       {results.length === 0 ? (
-        <EmptyState
-          icon={<SearchX size={28} strokeWidth={1.2} />}
-          title="Nothing matches those filters"
-          description="Try removing a filter or widening the price range — new pieces are added every week."
-          action={
-            <Button variant="secondary" onClick={clear}>
-              Clear filters
-            </Button>
-          }
-        />
+        products.length === 0 ? (
+          <EmptyState
+            icon={<SearchX size={28} strokeWidth={1.2} />}
+            title="The collection is being updated"
+            description="New pieces are on their way. Message us on WhatsApp and we will send you the latest arrivals."
+          />
+        ) : (
+          <EmptyState
+            icon={<SearchX size={28} strokeWidth={1.2} />}
+            title="Nothing matches those filters"
+            description="Try removing a filter or widening the price range — new pieces are added every week."
+            action={
+              <Button variant="secondary" onClick={clear}>
+                Clear filters
+              </Button>
+            }
+          />
+        )
       ) : (
         <>
           <ProductGrid products={shown} />

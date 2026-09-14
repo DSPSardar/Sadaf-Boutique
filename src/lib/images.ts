@@ -1,9 +1,11 @@
 import { GENERATED_ASSETS } from "@/data/assets.generated";
+import { mediaBase } from "@/lib/media";
+import type { ProductImage } from "@/types/product";
 
 export const CARD_WIDTHS = [400, 600, 800] as const;
 
 export function cardSrc(assetId: string, width: (typeof CARD_WIDTHS)[number] = 600): string {
-  return `/products/${assetId}/card-${width}.webp`;
+  return `${mediaBase(assetId)}/card-${width}.webp`;
 }
 
 export function cardSrcSet(assetId: string): string {
@@ -11,15 +13,19 @@ export function cardSrcSet(assetId: string): string {
 }
 
 export function largeSrc(assetId: string): string {
-  return `/products/${assetId}/large.webp`;
+  return `${mediaBase(assetId)}/large.webp`;
 }
 
-export function blurDataURL(assetId: string): string | undefined {
-  return GENERATED_ASSETS[assetId]?.blurDataURL;
+/** Blur placeholder: from the image record when it came from the database, else from the generated mock assets. */
+export function blurDataURL(image: Pick<ProductImage, "assetId" | "blurDataURL"> | string): string | undefined {
+  if (typeof image === "string") return GENERATED_ASSETS[image]?.blurDataURL;
+  return image.blurDataURL ?? GENERATED_ASSETS[image.assetId]?.blurDataURL;
 }
 
-export function largeDimensions(assetId: string): { width: number; height: number } {
-  return GENERATED_ASSETS[assetId]?.large ?? { width: 960, height: 1280 };
+export function largeDimensions(image: Pick<ProductImage, "assetId" | "width" | "height"> | string): { width: number; height: number } {
+  if (typeof image !== "string" && image.width && image.height) return { width: image.width, height: image.height };
+  const id = typeof image === "string" ? image : image.assetId;
+  return GENERATED_ASSETS[id]?.large ?? { width: 960, height: 1280 };
 }
 
 /** `sizes` attribute matching the responsive product grid (2 → 6 columns). */

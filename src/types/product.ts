@@ -3,9 +3,13 @@ import type { ColorFamily } from "@/data/assets";
 export type SortKey = "featured" | "newest" | "price-asc" | "price-desc";
 
 export interface ProductImage {
-  /** Photo asset id — resolved to renditions by lib/images.ts. */
+  /** Media key — resolved to renditions by lib/images.ts (mock key or storage path). */
   assetId: string;
   alt: string;
+  /** Present for database-backed media; mock assets look these up in assets.generated.ts. */
+  blurDataURL?: string;
+  width?: number;
+  height?: number;
 }
 
 export interface ProductVideo {
@@ -50,6 +54,8 @@ export interface Product {
   occasion: string[];
   /** Search tokens (fabric, colours, occasion, garment words). */
   tags: string[];
+  /** Only "active" products reach the storefront; present so admin views can reuse the type. */
+  status?: "draft" | "active" | "archived";
 }
 
 export interface Category {

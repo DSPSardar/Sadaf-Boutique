@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 import { useLocalStorageState } from "@/hooks/useLocalStorageState";
-import { PRODUCT_BY_ID } from "@/data/products";
+import { useCatalog } from "@/store/catalog";
 import type { CartLine, Product } from "@/types/product";
 
 export interface ResolvedCartLine extends CartLine {
@@ -30,16 +30,17 @@ const lineKey = (l: CartLine) => `${l.productId}|${l.size}|${l.color}`;
  */
 export function CartProvider({ children }: { children: ReactNode }) {
   const [raw, setRaw, hydrated] = useLocalStorageState<CartLine[]>("sadaf.cart", []);
+  const { byId } = useCatalog();
 
   const lines = useMemo<ResolvedCartLine[]>(
     () =>
       raw
         .map((l) => {
-          const product = PRODUCT_BY_ID.get(l.productId);
+          const product = byId.get(l.productId);
           return product ? { ...l, product, key: lineKey(l) } : null;
         })
         .filter((l): l is ResolvedCartLine => !!l),
-    [raw]
+    [raw, byId]
   );
 
   const add = useCallback(

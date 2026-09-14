@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useDeferredValue, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { CATEGORIES } from "@/data/categories";
-import { PRODUCTS } from "@/data/products";
+import { useCatalog } from "@/store/catalog";
 import { searchProducts } from "@/lib/catalog";
 import { useDialog } from "@/hooks/useDialog";
 import { useLocalStorageState } from "@/hooks/useLocalStorageState";
@@ -29,9 +29,10 @@ function SearchPanel({ onClose }: { onClose: () => void }) {
   const deferred = useDeferredValue(term);
   const [recent, setRecent] = useLocalStorageState<string[]>("sadaf.recent-searches", []);
   const panelRef = useRef<HTMLDivElement>(null);
+  const { products } = useCatalog();
   useDialog(searchOpen, closeSearch, panelRef);
 
-  const results = useMemo(() => searchProducts(PRODUCTS, deferred, 24), [deferred]);
+  const results = useMemo(() => searchProducts(products, deferred, 24), [products, deferred]);
   const hasTerm = deferred.trim().length > 0;
 
   const remember = (t: string) => {

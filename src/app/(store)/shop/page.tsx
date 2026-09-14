@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { catalog } from "@/lib/catalog";
+import { catalog } from "@/lib/catalog-source";
 import { CategoryNav } from "@/components/home/CategoryNav";
 import { ShopResults } from "@/components/shop/ShopResults";
 import { ProductGridSkeleton } from "@/components/ui/Skeleton";

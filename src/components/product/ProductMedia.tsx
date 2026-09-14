@@ -47,7 +47,7 @@ export function ProductMedia({ product, priority, hovered, sizes = GRID_SIZES, c
   return (
     <div
       className={cn("relative aspect-[4/5] w-full overflow-hidden bg-sand", className)}
-      style={{ backgroundImage: `url(${blurDataURL(primary.assetId)})`, backgroundSize: "cover" }}
+      style={{ backgroundImage: `url(${blurDataURL(primary)})`, backgroundSize: "cover" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

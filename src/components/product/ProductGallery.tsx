@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { blurDataURL, cardSrc, largeDimensions, largeSrc } from "@/lib/images";
-import type { Product } from "@/types/product";
+import type { Product, ProductImage } from "@/types/product";
 
 interface ProductGalleryProps {
   product: Product;
@@ -12,12 +12,12 @@ interface ProductGalleryProps {
   compact?: boolean;
 }
 
-type Slide = { kind: "image"; assetId: string; alt: string } | { kind: "video"; src: string; posterAssetId: string };
+type Slide = { kind: "image"; image: ProductImage } | { kind: "video"; src: string; posterAssetId: string };
 
 /** Main 4:5 canvas showing the full garment (no crop) with a thumbnail rail and prev/next controls. */
 export function ProductGallery({ product, compact }: ProductGalleryProps) {
   const slides: Slide[] = [
-    ...product.images.map((img) => ({ kind: "image" as const, assetId: img.assetId, alt: img.alt })),
+    ...product.images.map((img) => ({ kind: "image" as const, image: img })),
     ...(product.video ? [{ kind: "video" as const, src: product.video.src, posterAssetId: product.video.posterAssetId }] : []),
   ];
   const [index, setIndex] = useState(0);
@@ -33,7 +33,7 @@ export function ProductGallery({ product, compact }: ProductGalleryProps) {
     <div className={cn("flex flex-col gap-3", !compact && "lg:flex-row-reverse lg:gap-4")}>
       <div className={cn("relative aspect-[4/5] w-full overflow-hidden rounded-xs bg-sand", compact && "max-h-[58vh]")} onKeyDown={(e) => (e.key === "ArrowRight" ? go(1) : e.key === "ArrowLeft" ? go(-1) : null)}>
         {active.kind === "image" ? (
-          <ImageSlide key={active.assetId} assetId={active.assetId} alt={active.alt} priority={index === 0} />
+          <ImageSlide key={active.image.assetId} image={active.image} priority={index === 0} />
         ) : (
           <video
             key={active.src}
@@ -66,7 +66,7 @@ export function ProductGallery({ product, compact }: ProductGalleryProps) {
       {slides.length > 1 ? (
         <ul className={cn("no-scrollbar flex gap-2 overflow-x-auto", !compact && "lg:w-20 lg:shrink-0 lg:flex-col lg:overflow-y-auto")} role="tablist" aria-label="Product media">
           {slides.map((s, i) => {
-            const assetId = s.kind === "image" ? s.assetId : s.posterAssetId;
+            const assetId = s.kind === "image" ? s.image.assetId : s.posterAssetId;
             return (
               <li key={i} className="shrink-0">
                 <button
@@ -98,14 +98,15 @@ export function ProductGallery({ product, compact }: ProductGalleryProps) {
   );
 }
 
-function ImageSlide({ assetId, alt, priority }: { assetId: string; alt: string; priority: boolean }) {
+function ImageSlide({ image, priority }: { image: ProductImage; priority: boolean }) {
+  const { assetId, alt } = image;
   const [loaded, setLoaded] = useState(false);
-  const dims = largeDimensions(assetId);
+  const dims = largeDimensions(image);
   const markLoadedIfComplete = useCallback((el: HTMLImageElement | null) => {
     if (el?.complete && el.naturalWidth > 0) setLoaded(true);
   }, []);
   return (
-    <div className="absolute inset-0" style={{ backgroundImage: `url(${blurDataURL(assetId)})`, backgroundSize: "cover" }}>
+    <div className="absolute inset-0" style={{ backgroundImage: `url(${blurDataURL(image)})`, backgroundSize: "cover" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={markLoadedIfComplete}

@@ -1,16 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
-import { Suspense } from "react";
 import "./globals.css";
-import { AppProviders } from "@/store/providers";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { MobileNavigation } from "@/components/layout/MobileNavigation";
-import { MobileMenu } from "@/components/layout/MobileMenu";
-import { SearchOverlay } from "@/components/layout/SearchOverlay";
-import { CartDrawer } from "@/components/layout/CartDrawer";
-import { ProductQuickView } from "@/components/product/ProductQuickView";
-import { FloatingWhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
 import { SITE_URL } from "@/lib/site";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"], style: ["normal", "italic"], variable: "--font-cormorant", display: "swap" });
@@ -25,26 +15,11 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#f7f4ef", width: "device-width", initialScale: 1 };
 
+/** Root layout: fonts and global styles only. Storefront chrome lives in (store)/layout.tsx, the admin shell in (admin)/. */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${manrope.variable}`}>
-      <body className="min-h-dvh pb-14 lg:pb-0">
-        <AppProviders>
-          <Suspense fallback={<div className="h-14 lg:h-16" />}>
-            <Header />
-          </Suspense>
-          <main>{children}</main>
-          <Footer />
-          <Suspense>
-            <MobileNavigation />
-          </Suspense>
-          <MobileMenu />
-          <SearchOverlay />
-          <CartDrawer />
-          <ProductQuickView />
-          <FloatingWhatsAppButton />
-        </AppProviders>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

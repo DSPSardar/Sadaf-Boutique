@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { PRODUCT_BY_ID } from "@/data/products";
+import { useCatalog } from "@/store/catalog";
 import { useWishlist } from "@/store/wishlist";
 import type { Product } from "@/types/product";
 import { Button } from "@/components/ui/Button";
@@ -12,7 +12,8 @@ import { ProductGridSkeleton } from "@/components/ui/Skeleton";
 
 export function WishlistView() {
   const { ids, hydrated, clear } = useWishlist();
-  const products = ids.map((id) => PRODUCT_BY_ID.get(id)).filter((p): p is Product => !!p);
+  const { byId } = useCatalog();
+  const products = ids.map((id) => byId.get(id)).filter((p): p is Product => !!p);
 
   if (!hydrated) {
     return (

@@ -98,4 +98,3 @@ export const mockCatalog: CatalogSource = {
   },
 };
 
-export const catalog: CatalogSource = mockCatalog;

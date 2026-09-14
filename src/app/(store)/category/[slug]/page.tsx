@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CATEGORIES, CATEGORY_BY_SLUG } from "@/data/categories";
-import { catalog } from "@/lib/catalog";
+import { catalog } from "@/lib/catalog-source";
 import { CategoryNav } from "@/components/home/CategoryNav";
 import { ShopResults } from "@/components/shop/ShopResults";
 import { ProductGridSkeleton } from "@/components/ui/Skeleton";

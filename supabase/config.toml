@@ -1,0 +1,9 @@
+# Supabase CLI project config. `project_id` is set by `supabase link`.
+project_id = "sadaf-boutique"
+
+[db]
+major_version = 17
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"

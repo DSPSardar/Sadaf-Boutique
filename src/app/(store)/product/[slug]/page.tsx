@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { categoryLabel } from "@/data/categories";
-import { PRODUCTS } from "@/data/products";
-import { catalog, getRelated } from "@/lib/catalog";
+import { getRelated } from "@/lib/catalog";
+import { catalog } from "@/lib/catalog-source";
 import { cardSrc } from "@/lib/images";
 import { Price } from "@/components/product/Price";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -14,8 +14,11 @@ import { Tag } from "@/components/ui/Tag";
 
 type Params = { slug: string };
 
-export function generateStaticParams(): Params[] {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
+/** Products created in the admin after a build are rendered on first request, then cached. */
+export const dynamicParams = true;
+
+export async function generateStaticParams(): Promise<Params[]> {
+  return (await catalog.getProducts()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {

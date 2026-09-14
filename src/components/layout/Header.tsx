@@ -9,6 +9,7 @@ import { useCart } from "@/store/cart";
 import { useUI } from "@/store/ui";
 import { useWishlist } from "@/store/wishlist";
 import { IconButton } from "@/components/ui/IconButton";
+import { useHydrated } from "@/hooks/useHydrated";
 
 const NAV = [
   { href: "/shop", label: "Shop" },
@@ -22,6 +23,10 @@ export function Header() {
   const { openSearch, openCart, openMenu } = useUI();
   const { count } = useCart();
   const { ids } = useWishlist();
+  // Badges come from localStorage; render them only after this boundary has hydrated.
+  const hydrated = useHydrated();
+  const wishlistBadge = hydrated ? ids.length : 0;
+  const cartBadge = hydrated ? count : 0;
 
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-ivory/95 backdrop-blur-sm">
@@ -72,11 +77,11 @@ export function Header() {
             <Search size={20} strokeWidth={1.5} />
           </IconButton>
           <Link href="/wishlist" className="hidden lg:block">
-            <IconButton label="Wishlist" badge={ids.length} tabIndex={-1}>
+            <IconButton label="Wishlist" badge={wishlistBadge} tabIndex={-1}>
               <Heart size={20} strokeWidth={1.5} />
             </IconButton>
           </Link>
-          <IconButton label="Cart" badge={count} onClick={openCart}>
+          <IconButton label="Cart" badge={cartBadge} onClick={openCart}>
             <ShoppingBag size={20} strokeWidth={1.5} />
           </IconButton>
         </div>

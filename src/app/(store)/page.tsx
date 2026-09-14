@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { catalog } from "@/lib/catalog";
+import { catalog } from "@/lib/catalog-source";
 import { Hero } from "@/components/home/Hero";
 import { CategoryNav } from "@/components/home/CategoryNav";
 import { ShopResults } from "@/components/shop/ShopResults";

@@ -11,6 +11,8 @@ interface Store<T> {
   value: T;
   listeners: Set<() => void>;
   loaded: boolean;
+  /** Writes a new value, persists it and notifies subscribers. */
+  write: (next: T | ((prev: T) => T)) => void;
 }
 
 const stores = new Map<string, Store<unknown>>();
@@ -18,7 +20,21 @@ const stores = new Map<string, Store<unknown>>();
 function getStore<T>(key: string, initial: T): Store<T> {
   let store = stores.get(key) as Store<T> | undefined;
   if (!store) {
-    store = { value: initial, listeners: new Set(), loaded: false };
+    const created: Store<T> = {
+      value: initial,
+      listeners: new Set(),
+      loaded: false,
+      write(next) {
+        created.value = typeof next === "function" ? (next as (p: T) => T)(created.value) : next;
+        try {
+          window.localStorage.setItem(key, JSON.stringify(created.value));
+        } catch {
+          /* storage may be unavailable */
+        }
+        created.listeners.forEach((l) => l());
+      },
+    };
+    store = created;
     stores.set(key, store as Store<unknown>);
   }
   if (!store.loaded && typeof window !== "undefined") {
@@ -65,19 +81,7 @@ export function useLocalStorageState<T>(key: string, initial: T): [T, (next: T |
     () => false
   );
 
-  const set = useCallback(
-    (next: T | ((prev: T) => T)) => {
-      const resolved = typeof next === "function" ? (next as (p: T) => T)(store.value) : next;
-      store.value = resolved;
-      try {
-        window.localStorage.setItem(key, JSON.stringify(resolved));
-      } catch {
-        /* storage may be unavailable */
-      }
-      store.listeners.forEach((l) => l());
-    },
-    [store, key]
-  );
+  const set = useCallback((next: T | ((prev: T) => T)) => store.write(next), [store]);
 
   return [value, set, hydrated];
 }

@@ -49,17 +49,57 @@ Hand-curated tags for each photo are in `src/data/assets.ts`.
 The preview clips are generated from stills so the video UI (hover preview, play badge, gallery
 playback) can be exercised. Replace them with real clips by dropping an `.mp4` at the same path.
 
-## Connecting a backend later
+## Backend: Supabase + admin panel
 
-- **Catalogue:** implement `CatalogSource` in `src/lib/catalog.ts` against your API/database and
-  export it as `catalog`. Pages already call `catalog.getProducts()` / `getProductBySlug()`.
-  `filterProducts`, `sortProducts`, `searchProducts` are pure helpers you can keep client-side or
-  move server-side.
-- **Images:** `src/lib/images.ts` is the only place that builds image URLs. Point it at your CDN
-  and keep the same rendition names, or swap in `next/image` with a remote loader.
-- **Cart / wishlist:** `src/store/cart.tsx` and `src/store/wishlist.tsx` expose
-  `add / setQuantity / remove / toggle`. Replace the localStorage persistence with API calls.
-- **WhatsApp automation:** `src/lib/whatsapp.ts` builds the message. Swap `buildWhatsAppUrl`
-  for a call to your ordering service.
-- **Accounts, payments, inventory, admin:** intentionally not built. Product types already carry
-  `sku`, `stock` and `id` fields for inventory integration.
+The storefront reads from Supabase when `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+are set, and falls back to the built-in mock catalogue when they are not (design reviews, CI).
+
+### One-time setup
+
+1. Create a project at supabase.com (nearest region). In Project Settings → API copy the URL, the
+   anon/publishable key and the service-role key into `.env.local`.
+2. Under Authentication → Users, add the owner (email + password). Put the same email in `ADMIN_EMAILS`.
+3. Apply the schema and policies, then seed:
+
+```bash
+npx supabase login                       # opens the browser once
+npx supabase link --project-ref <ref>    # ref is in the project URL
+npx supabase db push                     # runs supabase/migrations/*
+psql "$DATABASE_URL" -f supabase/seed.sql            # base categories
+node scripts/seed-supabase.mjs           # optional: load the 120 demo products + media into Storage
+```
+
+   Then allow-list the admin email (run once in the SQL editor or psql):
+
+```sql
+insert into admin_invites (email) values ('owner@example.com');
+insert into admins (user_id, email) select id, email from auth.users where email = 'owner@example.com' on conflict do nothing;
+```
+
+4. `npm run dev` and open http://localhost:3000/admin.
+
+### How it fits together
+
+| Piece | Where |
+| --- | --- |
+| Schema, RLS, storage bucket + policies | `supabase/migrations/` |
+| Supabase clients (browser, cookie-bound server, anon public, service role) | `src/lib/supabase/` |
+| DB → `Product` mapping, public catalogue reads (cached, tag `catalog`) | `src/lib/catalog-supabase.ts`, `src/lib/catalog-source.ts` |
+| Session refresh + `/admin` gate | `src/proxy.ts` |
+| Admin allow-list check | `src/lib/admin/auth.ts` (`requireAdmin`) |
+| Admin pages, server actions | `src/app/(admin)/admin/` |
+| Photo renditions on upload (sharp) + Storage upload | `src/app/api/admin/media/route.ts`, `src/lib/admin/renditions.ts` |
+| Admin UI (product form, media manager, categories, login) | `src/components/admin/` |
+
+Every admin save calls `revalidateTag("catalog")`, so the storefront (ISR, 60 s) updates immediately.
+Only products with status **Live** are visible on the storefront; drafts and archived products are
+admin-only, enforced by row-level security as well as the queries.
+
+## Connecting the rest later
+
+- **Orders / checkout:** add an `orders` table and a checkout server action; the cart store in
+  `src/store/cart.tsx` already exposes resolved lines and a subtotal.
+- **Customer accounts:** Supabase Auth is in place for admins; a `customers` policy set and a
+  profile page would extend it. Wishlist/cart sync would replace the localStorage persistence.
+- **Payments / WhatsApp automation:** `src/lib/whatsapp.ts` builds the message today; swap
+  `buildWhatsAppUrl` for a call to your ordering service or payment gateway.
