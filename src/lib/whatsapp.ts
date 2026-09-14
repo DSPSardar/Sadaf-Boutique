@@ -1,12 +1,13 @@
 import type { Product } from "@/types/product";
 import { formatPKR } from "@/lib/format";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * WhatsApp ordering is frontend-only for now: we deep-link into WhatsApp with a prefilled
  * message. Swap `buildWhatsAppUrl` for an API call when order automation is connected.
  */
 const NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923000000000";
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+const SITE = SITE_URL;
 
 export interface OrderSelection {
   size?: string;
