@@ -144,12 +144,12 @@ export const GENERATED_ASSETS: Record<string, GeneratedAsset> = {
   },
   "4a684780": {
     "width": 589,
-    "height": 1280,
+    "height": 1208,
     "large": {
       "width": 589,
-      "height": 1280
+      "height": 1208
     },
-    "blurDataURL": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAwCdASoQABQAPu1iqU2ppaOiMAgBMB2JQBOgA/B78GJzTz6JqV0AAP7Nl0nHeukPH3uzUc54to9ovP1E/O1NG5PzSBQqOS4OkGFGRR4Ii4oQrrQAAA=="
+    "blurDataURL": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADQAwCdASoQABQAPu1iqU2ppaOiMAgBMB2JQBYdgk3Nj5fPGyJGxQAA/roqwYIbb1aGKq7Nm7p9uMOa5dKdiH7n7cn5pNfFKRLWJ2hsxOu29nBTjGuXgAAA"
   },
   "50cadec0": {
     "width": 589,
