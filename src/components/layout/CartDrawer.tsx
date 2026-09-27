@@ -62,7 +62,7 @@ export function CartDrawer() {
                   {l.product.name}
                 </Link>
                 <p className="mt-0.5 text-[12px] text-muted">
-                  {l.size} · {l.color}
+                  {[l.size, l.color].filter(Boolean).join(" · ")}
                 </p>
                 <div className="mt-auto flex items-center justify-between pt-2">
                   <div className="inline-flex h-8 items-center rounded-xs border border-hairline">

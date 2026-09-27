@@ -39,7 +39,10 @@ export function cartOrderMessage(
   subtotal: number
 ): string {
   const items = lines.map(
-    (l) => `• ${l.product.name} (SKU ${l.product.sku}) — ${l.size} / ${l.color} × ${l.quantity} — ${formatPKR(l.product.price * l.quantity)}`
+    (l) => {
+      const variant = [l.size, l.color].filter(Boolean).join(" / ");
+      return `• ${l.product.name} (SKU ${l.product.sku})${variant ? ` — ${variant}` : ""} × ${l.quantity} — ${formatPKR(l.product.price * l.quantity)}`;
+    }
   );
   return [`Hello Sadaf Boutique, I would like to order:`, ``, ...items, ``, `Subtotal: ${formatPKR(subtotal)}`].join("\n");
 }

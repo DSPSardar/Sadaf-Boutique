@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 import { productOrderMessage } from "@/lib/whatsapp";
 import { useCart } from "@/store/cart";
 import { useUI } from "@/store/ui";
-import type { Product } from "@/types/product";
+import type { Product, ProductColor } from "@/types/product";
 import { Button } from "@/components/ui/Button";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { WhatsAppButton } from "@/components/whatsapp/WhatsAppButton";
@@ -22,8 +22,11 @@ interface PurchasePanelProps {
 
 /** Size / colour / quantity selection with Add to Bag and WhatsApp actions. Shared by quick view and product page. */
 export function PurchasePanel({ product, compact, stickyBar, onAdded }: PurchasePanelProps) {
+  // Products added through the admin may have no colours or sizes yet; the panel must not assume either exists.
+  const hasColors = product.colors.length > 0;
+  const hasSizes = product.sizes.length > 0;
   const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0] : null);
-  const [color, setColor] = useState(product.colors[0]);
+  const [color, setColor] = useState<ProductColor | undefined>(product.colors[0]);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const { add } = useCart();
@@ -31,79 +34,83 @@ export function PurchasePanel({ product, compact, stickyBar, onAdded }: Purchase
   const soldOut = product.stock === 0;
 
   const addToBag = () => {
-    if (!size) {
+    if (hasSizes && !size) {
       setError("Please select a size");
       return;
     }
     setError(null);
-    add({ productId: product.id, size, color: color.name, quantity });
+    add({ productId: product.id, size: size ?? "", color: color?.name ?? "", quantity });
     onAdded?.();
     openCart();
   };
 
-  const message = productOrderMessage(product, { size: size ?? undefined, color: color.name, quantity });
+  const message = productOrderMessage(product, { size: size ?? undefined, color: color?.name, quantity });
 
   return (
     <div className={cn("flex flex-col", compact ? "gap-4" : "gap-5")}>
-      <fieldset>
-        <div className="mb-2 flex items-center justify-between">
-          <legend className="eyebrow">
-            Colour — <span className="text-ink normal-case tracking-normal">{color.name}</span>
-          </legend>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {product.colors.map((c) => (
-            <button
-              key={c.family}
-              type="button"
-              aria-label={c.name}
-              aria-pressed={c.family === color.family}
-              onClick={() => setColor(c)}
-              className={cn(
-                "h-8 w-8 rounded-full border-2 transition-all",
-                c.family === color.family ? "border-ink ring-2 ring-ivory ring-inset" : "border-hairline hover:border-muted"
-              )}
-              style={{ backgroundColor: c.hex }}
-            />
-          ))}
-        </div>
-      </fieldset>
+      {hasColors ? (
+        <fieldset>
+          <div className="mb-2 flex items-center justify-between">
+            <legend className="eyebrow">
+              Colour — <span className="text-ink normal-case tracking-normal">{color?.name}</span>
+            </legend>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {product.colors.map((c) => (
+              <button
+                key={c.family}
+                type="button"
+                aria-label={c.name}
+                aria-pressed={c.family === color?.family}
+                onClick={() => setColor(c)}
+                className={cn(
+                  "h-8 w-8 rounded-full border-2 transition-all",
+                  c.family === color?.family ? "border-ink ring-2 ring-ivory ring-inset" : "border-hairline hover:border-muted"
+                )}
+                style={{ backgroundColor: c.hex }}
+              />
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
 
-      <fieldset>
-        <div className="mb-2 flex items-center justify-between">
-          <legend className="eyebrow">
-            Size{size ? <span className="text-ink normal-case tracking-normal"> — {size}</span> : null}
-          </legend>
-          <button type="button" className="text-[11px] underline underline-offset-4 hover:text-gold">
-            Size guide
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Size">
-          {product.sizes.map((s) => (
-            <button
-              key={s}
-              type="button"
-              role="radio"
-              aria-checked={size === s}
-              onClick={() => {
-                setSize(s);
-                setError(null);
-              }}
-              className={cn(
-                "h-10 min-w-11 rounded-xs border px-3 text-[12px] font-medium uppercase tracking-[0.1em] transition-colors",
-                size === s ? "border-ink bg-ink text-ivory" : "border-hairline hover:border-ink"
-              )}
-            >
-              {s}
+      {hasSizes ? (
+        <fieldset>
+          <div className="mb-2 flex items-center justify-between">
+            <legend className="eyebrow">
+              Size{size ? <span className="text-ink normal-case tracking-normal"> — {size}</span> : null}
+            </legend>
+            <button type="button" className="text-[11px] underline underline-offset-4 hover:text-gold">
+              Size guide
             </button>
-          ))}
-        </div>
-        {error ? (
-          <p role="alert" className="mt-2 text-[12px] text-oxblood">
-            {error}
-          </p>
-        ) : null}
-      </fieldset>
+          </div>
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Size">
+            {product.sizes.map((s) => (
+              <button
+                key={s}
+                type="button"
+                role="radio"
+                aria-checked={size === s}
+                onClick={() => {
+                  setSize(s);
+                  setError(null);
+                }}
+                className={cn(
+                  "h-10 min-w-11 rounded-xs border px-3 text-[12px] font-medium uppercase tracking-[0.1em] transition-colors",
+                  size === s ? "border-ink bg-ink text-ivory" : "border-hairline hover:border-ink"
+                )}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          {error ? (
+            <p role="alert" className="mt-2 text-[12px] text-oxblood">
+              {error}
+            </p>
+          ) : null}
+        </fieldset>
+      ) : null}
 
       <div className="flex items-center gap-3">
         <div className="inline-flex h-11 items-center rounded-xs border border-hairline">
