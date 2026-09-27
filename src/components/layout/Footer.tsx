@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container-wide grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="font-display text-2xl uppercase tracking-[0.2em]">Sadaf Boutique</p>
-          <p className="mt-3 max-w-xs text-sm text-muted">Bridal and luxury formal wear, hand-embellished in our Lahore atelier. Orders by WhatsApp, delivery across Pakistan and worldwide.</p>
+          <p className="mt-3 max-w-xs text-sm text-muted">Bridal and luxury formal wear, hand-embellished in our Islamabad atelier. Orders by WhatsApp, delivery across Pakistan and worldwide.</p>
         </div>
         <FooterList title="Shop" items={CATEGORIES.map((c) => ({ href: `/category/${c.slug}`, label: c.label }))} />
         <FooterList
@@ -24,7 +24,7 @@ export function Footer() {
           <p className="text-sm leading-relaxed text-muted">
             Sadaf Boutique
             <br />
-            DHA Phase 5, Lahore
+            Islamabad, Pakistan
             <br />
             Mon – Sat, 11am – 9pm
           </p>

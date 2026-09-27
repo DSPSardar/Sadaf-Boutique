@@ -19,7 +19,7 @@ export function Hero() {
             Sadaf Boutique
           </h1>
           <p className="mt-1 font-display text-2xl italic text-muted sm:text-3xl">New Collection</p>
-          <p className="mt-3 hidden max-w-md text-sm leading-relaxed text-muted sm:block">Hand-embellished bridal and luxury formals — velvet, tissue and net, finished with zardozi in our Lahore atelier.</p>
+          <p className="mt-3 hidden max-w-md text-sm leading-relaxed text-muted sm:block">Hand-embellished bridal and luxury formals — velvet, tissue and net, finished with zardozi in our Islamabad atelier.</p>
           <div className="mt-4 flex items-center gap-3 sm:mt-5">
             <Link href="/shop?new=1">
               <Button size="lg">Shop now</Button>

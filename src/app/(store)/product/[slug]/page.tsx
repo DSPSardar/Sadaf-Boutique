@@ -28,11 +28,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!product) return {};
   const cat = categoryLabel(product.category);
   const url = productUrl(product);
-  const description = `${product.name} – ${cat} by ${BRAND}, Lahore. ${product.description}`.slice(0, 300);
+  const description = `${product.name} – ${cat} by ${BRAND}, Islamabad. ${product.description}`.slice(0, 300);
   return {
     title: `${product.name} | ${cat}`,
     description,
-    keywords: [product.name, cat, BRAND, "Pakistani bridal wear", "luxury formals Lahore", ...product.occasion, ...product.tags],
+    keywords: [product.name, cat, BRAND, "Pakistani bridal wear", "luxury formals Islamabad", "bridal wear Islamabad", ...product.occasion, ...product.tags],
     alternates: { canonical: url },
     openGraph: {
       type: "website",

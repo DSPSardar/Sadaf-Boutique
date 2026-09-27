@@ -15,9 +15,9 @@ export const STORE = {
   name: BRAND,
   url: SITE_URL,
   telephone: `+${WHATSAPP_NUMBER}`,
-  address: { "@type": "PostalAddress", addressLocality: "Lahore", addressRegion: "Punjab", addressCountry: "PK", streetAddress: "DHA Phase 5" },
+  address: { "@type": "PostalAddress", addressLocality: "Islamabad", addressRegion: "Islamabad Capital Territory", addressCountry: "PK" },
   openingHours: "Mo-Sa 11:00-21:00",
-  description: "Hand-embellished bridal wear and luxury formals from Lahore. Velvet, tissue and net ensembles with zardozi work. Order on WhatsApp, delivery across Pakistan and worldwide.",
+  description: "Hand-embellished bridal wear and luxury formals from Islamabad. Velvet, tissue and net ensembles with zardozi work. Order on WhatsApp, delivery across Pakistan and worldwide.",
 };
 
 const abs = (path: string): string => (path.startsWith("http") ? path : `${SITE_URL}${path}`);
@@ -29,7 +29,7 @@ export function productUrl(p: Pick<Product, "slug">): string {
 /** Descriptive alt text: what the photo shows, for whom, and by whom — not just the product name. */
 export function imageAlt(p: Pick<Product, "name" | "category">, index: number, existing?: string): string {
   const cat = categoryLabel(p.category);
-  const base = `${p.name} – ${cat} by ${BRAND}, Lahore`;
+  const base = `${p.name} – ${cat} by ${BRAND}, Islamabad`;
   if (existing && existing.trim() && existing.trim() !== p.name) return existing;
   return index === 0 ? base : `${p.name} – detail view ${index + 1} (${cat}, ${BRAND})`;
 }
@@ -39,7 +39,7 @@ export function videoTitle(p: Pick<Product, "name">): string {
 }
 
 export function videoDescription(p: Pick<Product, "name" | "category" | "description">): string {
-  return `Short video of the ${p.name} (${categoryLabel(p.category)}) from ${BRAND}, Lahore. ${p.description}`.slice(0, 500);
+  return `Short video of the ${p.name} (${categoryLabel(p.category)}) from ${BRAND}, Islamabad. ${p.description}`.slice(0, 500);
 }
 
 export function productImageUrls(p: Product): string[] {
@@ -106,7 +106,7 @@ export function productJsonLd(p: Product): Record<string, unknown>[] {
       p.details.work ? { "@type": "PropertyValue", name: "Embellishment", value: p.details.work } : null,
       p.details.pieces.length ? { "@type": "PropertyValue", name: "Includes", value: p.details.pieces.join(", ") } : null,
       p.sizes.length ? { "@type": "PropertyValue", name: "Sizes", value: p.sizes.join(", ") } : null,
-      { "@type": "PropertyValue", name: "Made in", value: "Lahore, Pakistan" },
+      { "@type": "PropertyValue", name: "Made in", value: "Islamabad, Pakistan" },
     ].filter(Boolean),
     ...(video ? { video, subjectOf: { "@id": `${url}#video` } } : {}),
     offers: {

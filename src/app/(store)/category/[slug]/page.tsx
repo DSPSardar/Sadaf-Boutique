@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!category) return {};
   return {
     title: `${category.label} – Pakistani ${category.label} Dresses`,
-    description: `${category.description} Shop ${category.label.toLowerCase()} by ${BRAND}, Lahore – order on WhatsApp, delivery across Pakistan and worldwide.`,
+    description: `${category.description} Shop ${category.label.toLowerCase()} by ${BRAND}, Islamabad – order on WhatsApp, delivery across Pakistan and worldwide.`,
     alternates: { canonical: `${SITE_URL}/category/${slug}` },
   };
 }

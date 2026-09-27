@@ -9,7 +9,7 @@ const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600"], var
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: "Sadaf Boutique — Bridal & Luxury Formals", template: "%s · Sadaf Boutique" },
-  description: "Hand-embellished bridal wear and luxury formals from Lahore. Velvet, tissue and net ensembles with zardozi work. Order on WhatsApp.",
+  description: "Hand-embellished bridal wear and luxury formals from Islamabad. Velvet, tissue and net ensembles with zardozi work. Order on WhatsApp.",
   openGraph: { siteName: "Sadaf Boutique", type: "website", images: ["/products/5451df09/card-800.webp"] },
 };
 
