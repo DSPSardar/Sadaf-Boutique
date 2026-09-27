@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { catalog } from "@/lib/catalog-source";
+import { jsonLdString, storeJsonLd } from "@/lib/seo";
 import { Hero } from "@/components/home/Hero";
 import { CategoryNav } from "@/components/home/CategoryNav";
 import { ShopResults } from "@/components/shop/ShopResults";
@@ -9,6 +10,7 @@ export default async function HomePage() {
   const products = await catalog.getProducts();
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(storeJsonLd()) }} />
       <Hero />
       <Suspense>
         <CategoryNav />

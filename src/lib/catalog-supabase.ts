@@ -2,6 +2,7 @@ import { CATEGORIES } from "@/data/categories";
 import type { CatalogSource } from "@/lib/catalog";
 import { filterProducts, sortProducts } from "@/lib/catalog";
 import { mediaBase } from "@/lib/media";
+import { imageAlt } from "@/lib/seo";
 import { getPublicSupabase } from "@/lib/supabase/server";
 import type { CategoryRow, ProductMediaRow, ProductWithRelations } from "@/lib/supabase/types";
 import type { Category, Product, ProductImage } from "@/types/product";
@@ -16,7 +17,7 @@ export function rowToProduct(row: ProductWithRelations): Product {
     .filter((m) => m.kind === "image")
     .map((m, i) => ({
       assetId: m.storage_path,
-      alt: m.alt || (i === 0 ? row.name : `${row.name} — view ${i + 1}`),
+      alt: imageAlt({ name: row.name, category: row.categories?.slug ?? "" }, i, m.alt),
       blurDataURL: m.blur_data_url ?? undefined,
       width: m.width ?? undefined,
       height: m.height ?? undefined,

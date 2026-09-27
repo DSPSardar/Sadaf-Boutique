@@ -7,7 +7,8 @@ import { SITE_URL } from "@/lib/site";
  * message. Swap `buildWhatsAppUrl` for an API call when order automation is connected.
  */
 // Boutique WhatsApp: 0371 3078774 → international format without "+". Env var overrides (blank ignored).
-const NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || "923713078774";
+export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || "923713078774";
+const NUMBER = WHATSAPP_NUMBER;
 const SITE = SITE_URL;
 
 export interface OrderSelection {

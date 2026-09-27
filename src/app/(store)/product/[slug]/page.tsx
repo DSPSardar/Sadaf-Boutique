@@ -5,7 +5,8 @@ import { ChevronRight } from "lucide-react";
 import { categoryLabel } from "@/data/categories";
 import { getRelated } from "@/lib/catalog";
 import { catalog } from "@/lib/catalog-source";
-import { cardSrc } from "@/lib/images";
+import { cardSrc, largeSrc } from "@/lib/images";
+import { BRAND, imageAlt, jsonLdString, productJsonLd, productUrl, videoDescription, videoTitle } from "@/lib/seo";
 import { Price } from "@/components/product/Price";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { PurchasePanel } from "@/components/product/PurchasePanel";
@@ -25,10 +26,23 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const product = await catalog.getProductBySlug(slug);
   if (!product) return {};
+  const cat = categoryLabel(product.category);
+  const url = productUrl(product);
+  const description = `${product.name} – ${cat} by ${BRAND}, Lahore. ${product.description}`.slice(0, 300);
   return {
-    title: product.name,
-    description: product.description,
-    openGraph: { images: [cardSrc(product.images[0].assetId, 800)] },
+    title: `${product.name} | ${cat}`,
+    description,
+    keywords: [product.name, cat, BRAND, "Pakistani bridal wear", "luxury formals Lahore", ...product.occasion, ...product.tags],
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      url,
+      title: `${product.name} | ${cat} | ${BRAND}`,
+      description,
+      images: product.images.map((img, i) => ({ url: largeSrc(img.assetId), alt: imageAlt(product, i, img.alt), width: img.width, height: img.height })),
+      ...(product.video ? { videos: [{ url: product.video.src, type: "video/mp4", width: 1080, height: 1350 }] } : {}),
+    },
+    twitter: { card: "summary_large_image", title: `${product.name} | ${BRAND}`, description, images: [cardSrc(product.images[0].assetId, 800)] },
   };
 }
 
@@ -39,8 +53,17 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const related = getRelated(product, await catalog.getProducts(), 12);
   const onSale = !!product.compareAtPrice && product.compareAtPrice > product.price;
 
+  const jsonLd = productJsonLd(product);
+
   return (
     <div className="container-wide pt-3 pb-24 lg:pt-5 lg:pb-0">
+      {jsonLd.map((block, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(block) }} />
+      ))}
+      {product.video ? (
+        /* Crawlable video element (the interactive gallery mounts it client-side); hidden from users. */
+        <video src={product.video.src} poster={cardSrc(product.video.posterAssetId, 800)} title={videoTitle(product)} aria-label={videoDescription(product)} preload="none" muted playsInline hidden />
+      ) : null}
       <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1 text-[11px] text-muted">
         <Link href="/" className="hover:text-ink">Home</Link>
         <ChevronRight size={12} />
